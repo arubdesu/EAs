@@ -19,6 +19,7 @@ ALLOWED = ["com.barebones.authd",
            "com.microsoft.office.licensingV2.helper",
            "com.oracle.java.JavaUpdateHelper",
            "com.tunnelbear.mac.tbeard",
+           "com.teamviewer.Helper",
            "fr.whitebox.packages",
            "Google Drive Icon Helper"]# srsly, Google?
 
