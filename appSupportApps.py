@@ -8,7 +8,8 @@ import glob
 import os
 
 
-ALLOWED = ["asannotation2.app",
+ALLOWED = ["Android File Transfer Agent.app",
+           "asannotation2.app",
            "aswatcher.app",
            "atmsupload.app",
            "Box Edit.app",
@@ -18,6 +19,7 @@ ALLOWED = ["asannotation2.app",
            "CocoaDialog.app",
            "CommitWindow.app",
            "convertpdf.app",
+           "crash_report_sender.app",
            "Dropbox.app",
            "Event Center.app",
            "InstallBoxEdit.app",
@@ -33,6 +35,12 @@ ALLOWED = ["asannotation2.app",
            #"Wondershare Helper Compact.app", see what I mean by sketchy?
            "XTrace.app",]
 
+CRAPPY_PATHS = ["CitrixOnline/",
+                "Web Applications",
+                "GoToMyPC Viewer",
+                "Java/",
+                "TextExpander",]
+
 ALL_USERS_APP_SUPPORT = glob.glob('/Users/*/Library/Application Support')
 
 FOUND_APPS = []
@@ -43,14 +51,18 @@ for userpath in ALL_USERS_APP_SUPPORT:
 
 TO_INVESTIGATE = []
 
+def check_apps(app):
+    """rather than doing 'starts/endswith' tomfoolery, check in function"""
+    for path in CRAPPY_PATHS:
+        print path
+        if path in app:
+            return TO_INVESTIGATE
+    if os.path.basename(app) not in ALLOWED:
+        TO_INVESTIGATE.append(app)
+    return TO_INVESTIGATE
+
 for app in FOUND_APPS:
-    if not "Google/Chrome/" in app:
-        #pylint: disable=line-too-long
-        if not app.endswith("TextExpander.app/Contents/Frameworks/Sparkle.framework/Versions/A/Resources/finish_installation.app"):
-            if not app.endswith("Java/finish_installation.app"):
-                if not os.path.basename(app).startswith("GoToMyPC Viewer"):
-                    if os.path.basename(app) not in ALLOWED:
-                        TO_INVESTIGATE.append(app)
+    check_apps(app)
 
 if TO_INVESTIGATE:
     RESULT = "Not in whitelist, investigate:\n" + "\n".join(*[TO_INVESTIGATE])
