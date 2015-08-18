@@ -8,8 +8,10 @@ import platform
 
 CLEAN_SUDOERSv1 = 'bf682f2d93bbcb6465e302fc768646b02c304d40'
 CLEAN_SUDOERSv2 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
-# this will change as of 10.10.5+python 2.7.10, 46480e019321f49050bbc3c5d087b28d878b6048
-CLEAN_PYTHON = 'ae79a52d9dc6ab37b8dcfc096faf9882ddd12e8e'
+
+CLEAN_PYTHONv1 = 'ae79a52d9dc6ab37b8dcfc096faf9882ddd12e8e'
+# changed as of 10.10.5+python 2.7.10
+CLEAN_PYTHONv2 = '46480e019321f49050bbc3c5d087b28d878b6048'
 # if we have a bad sudoers, I want a diff against a 'clean' 10.10.4 one
 CLEAN_SUDOERS_STRING = """# sudoers file.
 #
@@ -64,8 +66,9 @@ RUNNING_OS_RELEASE = '.'.join(platform.mac_ver()[0].split('.')[0:2])
 if RUNNING_OS_RELEASE == '10.10':
     with open('/usr/bin/python', 'rb') as checking_binary:
         ACTUAL_PYTHON = hashlib.sha1(checking_binary.read()).hexdigest()
-    if ACTUAL_PYTHON != CLEAN_PYTHON:
-        BADDY_LIST.append('Actual python is %s' % ACTUAL_PYTHON)
+    if ACTUAL_PYTHON != CLEAN_PYTHONv1:
+        if ACTUAL_PYTHON != CLEAN_PYTHONv2:
+            BADDY_LIST.append('Actual python is %s' % ACTUAL_PYTHON)
 with open('/etc/sudoers', 'rb') as sudoers:
     ACTUAL_SUDOERS = [line.strip() for line in sudoers]
     ACTUAL_SUDOERS_SHA1 = hashlib.sha1(sudoers.read()).hexdigest()
