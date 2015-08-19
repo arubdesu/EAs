@@ -15,32 +15,42 @@ EXCLUDED = ['blued',]
             # 'snmpInk',# print-related tomfoolery
             # 'QuickLookSatellite',# on my system that's TextMate messing up
 
-
+# how often you consider worth reporting, and how far back to include
 FREQ = 5
 DAYS_FROM = 30
 
-SYS_CRASHERS = glob.glob('/Library/Logs/DiagnosticReports/*.crash')
-USR_CRASHERS = glob.glob('/Users/*/Library/Logs/DiagnosticReports/*.crash')
-# join into master list
-DAS_CRASHERS = SYS_CRASHERS + USR_CRASHERS
+DAS_CRASHERS = glob.glob('/Library/Logs/DiagnosticReports/*.crash')
+DAS_CRASHERS += glob.glob('/Users/*/Library/Logs/DiagnosticReports/*.crash')
 # build up interim list without more-than-month-old crashes, start by getting -30 date
 FORMAT = "%Y-%M-%d-%H%M%S"
 DELTA_OBJECT = datetime.timedelta(days=DAYS_FROM)
 START_DATETIME = datetime.datetime.today() - DELTA_OBJECT
-MONTH_AGO = START_DATETIME.strftime(FORMAT)
+TIMESTAMP_AGO = START_DATETIME.strftime(FORMAT)
 
-CURRENTS = []
+FREQ_LIST, PATH_LIST, OUR_PATHS_LIST = [], [], []
+
 for crasher in DAS_CRASHERS:
     stripd_path = os.path.basename(crasher)
     dis_date = stripd_path.split('_')[1]
-    if dis_date < MONTH_AGO:
-        CURRENTS.append(stripd_path.split('_')[0])
-CURRENT_DICT = collections.Counter(CURRENTS)
-# crazy list comprehension to make new dict of apps that have crashed 5+ times
-JUST_OFTENS = dict((crasher, freq) for crasher, freq in CURRENT_DICT.items() if freq >= FREQ)
+    if dis_date > TIMESTAMP_AGO:
+        FREQ_LIST.append(stripd_path.split('_')[0])
+        PATH_LIST.append(crasher)
 
-if JUST_OFTENS:
-    RESULT = JUST_OFTENS
+CURRENTS_DICT = collections.Counter(FREQ_LIST)
+# crazy list comprehension to make dict of app:frequency for processes that have crashed 5+ times
+FREQS_DICT = dict((crashing_app, freq) for crashing_app, freq in CURRENTS_DICT.items() if freq >= FREQ)
+
+RESULT_LIST = ["%s: %s" % (process, freq) for process, freq in FREQS_DICT.items()]
+keylist = FREQS_DICT.keys()
+for path in PATH_LIST:
+    for key in keylist:
+        if key in path:
+            OUR_PATHS_LIST.append(path)
+        
+RESULT_LIST += OUR_PATHS_LIST
+
+if RESULT_LIST:
+    RESULT = "\n".join(*[RESULT_LIST])
 else:
     RESULT = "No recent heavy crashers"
 
