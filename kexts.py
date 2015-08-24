@@ -19,13 +19,23 @@ def main():
     """gimme some main"""
     osquery_check()
 
-    allowed = ["/Library/Application Support/VirtualBox/VBoxDrv.kext",
+    allowed = ["/Applications/VMware Fusion.app/Contents/Library/kexts/vmnet.kext",
+               "/Applications/VMware Fusion.app/Contents/Library/kexts/VMwareVMCI.kext",
+               "/Applications/VMware Fusion.app/Contents/Library/kexts/vsockets.kext",
+               "/Applications/VMware Fusion.app/Contents/Library/kexts/vmmon.kext",
+               "/Applications/VMware Fusion.app/Contents/Library/kexts/vmioplug.kext",
+               "/Library/Application Support/VirtualBox/VBoxDrv.kext",
                "/Library/Application Support/VirtualBox/VBoxNetAdp.kext",
                "/Library/Application Support/VirtualBox/VBoxNetFlt.kext",
                "/Library/Application Support/VirtualBox/VBoxUSB.kext",
+               "/Library/Extensions/LogitechHIDDevices.kext",
+               "/Library/Extensions/LogitechUnifying.kext",
+               "/Library/Extensions/PromiseSTEX.kext",
+               "/opt/cisco/anyconnect/bin/acsock.kext",
                "/System/Library/Extensions/dne.kext",
                "/System/Library/Extensions/dniregistry.kext",
-               "/System/Library/Extensions/net6im.kext",]
+               "/System/Library/Extensions/net6im.kext",
+               "/System/Library/Extensions/Soundflower.kext",]
 
     cmd = ['/usr/local/bin/osqueryi', '--json', 'select name, path from kernel_extensions']
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
