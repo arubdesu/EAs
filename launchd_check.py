@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Naively checks against a manually self-maintained whitelist"""
-#pylint: disable=invalid-name
 
 
 import os
@@ -80,6 +79,7 @@ LAUNCHD_WHITELIST = ['com.adobe.adobeupdatedaemon.plist',
                      'com.deploystudio.finalizeCleanup.plist',
                      'com.deploystudio.server.plist',
                      'com.deterministicnetworks.daemon.dniregsvr.plist',
+                     'com.facebook.osqueryd.plist',
                      'com.fernlightning.fseventer.plist',
                      'com.fitbit.galileod.plist',
                      'com.github.autopkg.autopkginstalld.plist',
@@ -128,10 +128,11 @@ LAUNCHD_WHITELIST = ['com.adobe.adobeupdatedaemon.plist',
 LAUNCHD_ALL_WHITELIST = LAUNCHA_WHITELIST + LAUNCHD_WHITELIST
 
 LAUNCHA_FOUND_JOBS = glob.glob('/Library/LaunchAgents/*.plist')
-USR_LAUNCHA_JOBS = glob.glob('/Users/*/Library/LaunchAgents/*.plist')
+LAUNCHA_FOUND_JOBS += glob.glob('/Users/*/Library/LaunchAgents/*.plist')
 LAUNCHD_FOUND_JOBS = glob.glob('/Library/LaunchDaemons/*.plist')
+LAUNCHD_FOUND_JOBS += glob.glob('/Library/StartupItems/*')
 
-LAUNCHALL_FOUND_JOBS = LAUNCHA_FOUND_JOBS + USR_LAUNCHA_JOBS + LAUNCHD_FOUND_JOBS
+LAUNCHALL_FOUND_JOBS = LAUNCHA_FOUND_JOBS + LAUNCHD_FOUND_JOBS
 
 for job in LAUNCHALL_FOUND_JOBS:
     if not os.path.basename(job) in LAUNCHD_ALL_WHITELIST:

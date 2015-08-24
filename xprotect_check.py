@@ -6,41 +6,45 @@ import os
 import CoreFoundation
 
 
-VERSIONKEY = 'CFBundleVersion'
+def main():
+    """gimme some main"""
+    versionkey = 'CFBundleVersion'
 
-FLASHINFOPATH = "/Library/Internet Plug-Ins/Flash Player.plugin/Contents/Info.plist"
-FLASHINXPROTECT = "com.macromedia.Flash Player.plugin"
+    flashinfopath = "/Library/Internet Plug-Ins/Flash Player.plugin/Contents/Info.plist"
+    flashinxprotect = "com.macromedia.Flash Player.plugin"
 
-JAVAINFOPATH = "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist"
-JAVAINXPROTECT = "com.oracle.java.JavaAppletPlugin"
-#pylint: disable=line-too-long
-XPROTECTPATH = '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XProtect.meta.plist'
-XPROTECTMINVERSIONKEY = 'MinimumPlugInBundleVersion'
-# yes, this isn't strictly a pref value, it's just less code to do it this way
-BLACKLISTSTANZA = CoreFoundation.CFPreferencesCopyAppValue("PlugInBlacklist", XPROTECTPATH)
+    javainfopath = "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist"
+    javainxprotect = "com.oracle.java.JavaAppletPlugin"
+    #pylint: disable=line-too-long
+    xprotectpath = '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XProtect.meta.plist'
+    xprotectminversionkey = 'MinimumPlugInBundleVersion'
+    # yes, this isn't strictly a pref value, it's just less code to do it this way
+    blackliststanza = CoreFoundation.CFPreferencesCopyAppValue("PlugInBlacklist", xprotectpath)
 
-MINFLASH = BLACKLISTSTANZA['10'][FLASHINXPROTECT][XPROTECTMINVERSIONKEY]
-MINJAVA = BLACKLISTSTANZA['10'][JAVAINXPROTECT][XPROTECTMINVERSIONKEY]
-# since we're only checking two values I'm not even making a list, just building up a string
-XPROTECTCAUGHT = ''
+    minflash = blackliststanza['10'][flashinxprotect][xprotectminversionkey]
+    minjava = blackliststanza['10'][javainxprotect][xprotectminversionkey]
+    # since we're only checking two values I'm not even making a list, just building up a string
+    xprotectcaught = ''
 
-if os.path.exists(FLASHINFOPATH):
-    FLASHVERSION = CoreFoundation.CFPreferencesCopyAppValue(VERSIONKEY, FLASHINFOPATH)
-    if FLASHVERSION < MINFLASH:
-        XPROTECTCAUGHT += 'installed flash version %s less than xprotects minimum %s' % (FLASHVERSION, MINFLASH)
+    if os.path.exists(flashinfopath):
+        flashversion = CoreFoundation.CFPreferencesCopyAppValue(versionkey, flashinfopath)
+        if flashversion < minflash:
+            xprotectcaught += 'installed flash version %s less than xprotects minimum %s' % (flashversion, minflash)
 
-if os.path.exists(JAVAINFOPATH):
-    JAVAVERSION = CoreFoundation.CFPreferencesCopyAppValue(VERSIONKEY, JAVAINFOPATH)
-    if JAVAVERSION < MINJAVA:
-        if not XPROTECTCAUGHT == '':
-            XPROTECTCAUGHT += '\ninstalled java version %s less than xprotects minimum %s' % (JAVAVERSION, MINJAVA)
-        else:
-            XPROTECTCAUGHT += 'installed java version %s less than xprotects minimum %s' % (JAVAVERSION, MINJAVA)
+    if os.path.exists(javainfopath):
+        javaversion = CoreFoundation.CFPreferencesCopyAppValue(versionkey, javainfopath)
+        if javaversion < minjava:
+            if not xprotectcaught == '':
+                xprotectcaught += '\ninstalled java version %s less than xprotects minimum %s' % (javaversion, minjava)
+            else:
+                xprotectcaught += 'installed java version %s less than xprotects minimum %s' % (javaversion, minjava)
 
-if not XPROTECTCAUGHT:
-    RESULT = "Patched"
-else:
-    RESULT = XPROTECTCAUGHT
+    if not xprotectcaught:
+        result = "Patched"
+    else:
+        result = xprotectcaught
 
-print "<result>%s</result>" % RESULT
+    print "<result>%s</result>" % result
 
+if __name__ == '__main__':
+    main()
