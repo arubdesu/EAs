@@ -32,6 +32,7 @@ def main():
                "/Library/Extensions/LogitechUnifying.kext",
                "/Library/Extensions/PromiseSTEX.kext",
                "/opt/cisco/anyconnect/bin/acsock.kext",
+               "/System/Library/Extensions/ATTOiSCSI.kext",
                "/System/Library/Extensions/dne.kext",
                "/System/Library/Extensions/dniregistry.kext",
                "/System/Library/Extensions/net6im.kext",
