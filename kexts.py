@@ -15,6 +15,16 @@ def osquery_check():
         print "<result>%s</result>" % result
         sys.exit(0)
 
+def run_osquery(sql):
+    """take sql command you'd like json output for from osquery"""
+    cmd = ['/usr/local/bin/osqueryi', '--json', sql]
+    jsony_out = subprocess.check_output(cmd)
+    try:
+        jsony_dictlist = json.loads(jsony_out)
+    except ValueError:
+        sys.exit(1)
+    return jsony_dictlist
+
 def main():
     """gimme some main"""
     osquery_check()
@@ -28,26 +38,23 @@ def main():
                "/Library/Application Support/VirtualBox/VBoxNetAdp.kext",
                "/Library/Application Support/VirtualBox/VBoxNetFlt.kext",
                "/Library/Application Support/VirtualBox/VBoxUSB.kext",
+               "/Library/Extensions/BlackBerryVirtualPrivateNetwork.kext",
                "/Library/Extensions/LogitechHIDDevices.kext",
                "/Library/Extensions/LogitechUnifying.kext",
                "/Library/Extensions/PromiseSTEX.kext",
+               "/Library/Extensions/RIMBBUSB.kext",
                "/opt/cisco/anyconnect/bin/acsock.kext",
                "/System/Library/Extensions/ATTOiSCSI.kext",
                "/System/Library/Extensions/dne.kext",
                "/System/Library/Extensions/dniregistry.kext",
+               "/System/Library/Extensions/IONetworkingFamily.kext/Contents/PlugIns/AX88179_178A.kext", 
                "/System/Library/Extensions/net6im.kext",
                "/System/Library/Extensions/Seagate Storage Driver.kext",
                "/System/Library/Extensions/Soundflower.kext",]
 
-    cmd = ['/usr/local/bin/osqueryi', '--json', 'select name, path from kernel_extensions']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    out = proc.communicate()[0]
-    try:
-        jsony_dictlist = json.loads(out)
-    except ValueError:
-        print ValueError
+    kext_dicts = run_osquery('select name, path from kernel_extensions')
     just_non_apples = []
-    for each in jsony_dictlist:
+    for each in kext_dicts:
         if each['name'].startswith("com.apple"):
             pass
         else:

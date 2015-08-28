@@ -11,47 +11,59 @@ import glob
 import os
 
 
-EXCLUDED = ['blued',]
-            # 'snmpInk',# print-related tomfoolery
-            # 'QuickLookSatellite',# on my system that's TextMate messing up
+def main():
+    """gimme some main"""
+    excluded = ['blued']
+                # 'Tweetbot,]
+                # 'snmpInk',# print-related tomfoolery
+                # 'QuickLookSatellite',# on my system that's TextMate messing up
 
-# how often you consider worth reporting, and how far back to include
-FREQ = 5
-DAYS_FROM = 30
+    # how often you consider worth reporting, and how far back to include
+    das_freq = 5
+    days_from = 30
 
-DAS_CRASHERS = glob.glob('/Library/Logs/DiagnosticReports/*.crash')
-DAS_CRASHERS += glob.glob('/Users/*/Library/Logs/DiagnosticReports/*.crash')
-# build up interim list without more-than-month-old crashes, start by getting -30 date
-FORMAT = "%Y-%M-%d-%H%M%S"
-DELTA_OBJECT = datetime.timedelta(days=DAYS_FROM)
-START_DATETIME = datetime.datetime.today() - DELTA_OBJECT
-TIMESTAMP_AGO = START_DATETIME.strftime(FORMAT)
+    das_crashers = glob.glob('/Library/Logs/DiagnosticReports/*.crash')
+    das_crashers += glob.glob('/Users/*/Library/Logs/DiagnosticReports/*.crash')
+    # build up interim list without more-than-month-old crashes, start by getting -30 date
+    das_format = "%Y-%M-%d-%H%M%S"
+    delta_object = datetime.timedelta(days=days_from)
+    start_datetime = datetime.datetime.today() - delta_object
+    timestamp_ago = start_datetime.strftime(das_format)
 
-FREQ_LIST, PATH_LIST, OUR_PATHS_LIST = [], [], []
+    freq_list, path_list, our_paths_list = [], [], []
 
-for crasher in DAS_CRASHERS:
-    stripd_path = os.path.basename(crasher)
-    dis_date = stripd_path.split('_')[1]
-    if dis_date > TIMESTAMP_AGO:
-        FREQ_LIST.append(stripd_path.split('_')[0])
-        PATH_LIST.append(crasher)
+    for crasher in das_crashers:
+        stripd_path = os.path.basename(crasher)
+        dis_date = stripd_path.split('_')[1]
+        if dis_date < timestamp_ago:
+            freq_list.append(stripd_path.split('_')[0])
+            path_list.append(crasher)
 
-CURRENTS_DICT = collections.Counter(FREQ_LIST)
-# crazy list comprehension to make dict of app:frequency for processes that have crashed 5+ times
-FREQS_DICT = dict((crashing_app, freq) for crashing_app, freq in CURRENTS_DICT.items() if freq >= FREQ)
+    currents_dict = collections.Counter(freq_list)
+    #pylint: disable=line-too-long
+    # crazy list comprehension to make dict of app:frequency for processes that have crashed 5+ times
+    freqs_dict = dict((crashing_app, freq) for crashing_app, freq in currents_dict.items() if freq >= das_freq)
+    filtered = {}
+    for tup in freqs_dict.items():
+        if tup[0] in excluded:
+            continue
+        else:
+            filtered[tup[0]] = tup[1]
+    result_list = ["%s: %s" % (process, freq) for process, freq in filtered.items()]
+    keylist = filtered.keys()
+    for path in path_list:
+        for key in keylist:
+            if key in path:
+                our_paths_list.append(path)
 
-RESULT_LIST = ["%s: %s" % (process, freq) for process, freq in FREQS_DICT.items()]
-keylist = FREQS_DICT.keys()
-for path in PATH_LIST:
-    for key in keylist:
-        if key in path:
-            OUR_PATHS_LIST.append(path)
-        
-RESULT_LIST += OUR_PATHS_LIST
+    result_list += our_paths_list
 
-if RESULT_LIST:
-    RESULT = "\n".join(*[RESULT_LIST])
-else:
-    RESULT = "No recent heavy crashers"
+    if result_list:
+        result = "\n".join(*[result_list])
+    else:
+        result = "No recent heavy crashers"
 
-print "<result>%s</result>" % RESULT
+    print "<result>%s</result>" % result
+
+if __name__ == '__main__':
+    main()

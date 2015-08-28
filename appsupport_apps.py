@@ -46,7 +46,7 @@ def main():
 
     found_apps = []
     for userpath in all_users_app_support:
-        for root, dirnames, filenames in os.walk(userpath):
+        for root, dirnames, _ in os.walk(userpath):
             for dirname in fnmatch.filter(dirnames, '*.app'):
                 found_apps.append(os.path.join(root, dirname))
 
