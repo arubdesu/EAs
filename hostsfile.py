@@ -15,6 +15,16 @@ def osquery_check():
         print "<result>%s</result>" % result
         sys.exit(0)
 
+def run_osquery(sql):
+    """take sql command you'd like json output for from osquery"""
+    cmd = ['/usr/local/bin/osqueryi', '--json', sql]
+    jsony_out = subprocess.check_output(cmd)
+    try:
+        jsony_dictlist = json.loads(jsony_out)
+    except ValueError:
+        sys.exit(1)
+    return jsony_dictlist
+
 def main():
     """gimme some main"""
     osquery_check()
@@ -23,14 +33,7 @@ def main():
                 {u'hostnames': u'broadcasthost', u'address': u'255.255.255.255'},
                 {u'hostnames': u'localhost', u'address': u'::1'},]
 
-    cmd = ['/usr/local/bin/osqueryi', '--json', 'select * from etc_hosts']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    out = proc.communicate()[0]
-    try:
-        jsony_dictlist = json.loads(out)
-    except ValueError:
-        print "<result>ye olde ValueError</result>"
-        sys.exit(0)
+    jsony_dictlist = run_osquery('select * from etc_hosts')
     to_investigate = []
 
     for host_dict in jsony_dictlist:

@@ -2,13 +2,44 @@
 """Given a whitelist of legit helper apps, report on stuff to investigate."""
 
 
-import fnmatch
-import glob
+import json
 import os
+import subprocess
+import sys
 
+
+def osquery_check():
+    """bail early if osquery not installed"""
+    if not os.path.exists('/usr/local/bin/osqueryi'):
+        result = 'wha? no osquery? bro, do you even lift?'
+        print "<result>%s</result>" % result
+        sys.exit(0)
+
+def run_osquery(sql):
+    """take sql command you'd like json output for from osquery"""
+    cmd = ['/usr/local/bin/osqueryi', '--json', sql]
+    jsony_out = subprocess.check_output(cmd)
+    try:
+        jsony_dictlist = json.loads(jsony_out)
+    except ValueError:
+        sys.exit(1)
+    return jsony_dictlist
+
+def check_app(app):
+    """rather than doing 'starts/endswith' tomfoolery, check in function"""
+    crappy_paths = ["CitrixOnline/",
+                    "Web Applications",
+                    "GoToMyPC Viewer",
+                    "Java/",
+                    "TextExpander",]
+    for path in crappy_paths:
+        if path in app:
+            return
+    return app
 
 def main():
     """gimme some main"""
+    osquery_check()
     allowed = ["Android File Transfer Agent.app",
                "asannotation2.app",
                "aswatcher.app",
@@ -36,34 +67,16 @@ def main():
                #"Wondershare Helper Compact.app", see what I mean by sketchy?
                "XTrace.app",]
 
-    crappy_paths = ["CitrixOnline/",
-                    "Web Applications",
-                    "GoToMyPC Viewer",
-                    "Java/",
-                    "TextExpander",]
-
-    all_users_app_support = glob.glob('/Users/*/Library/Application Support')
-
-    found_apps = []
-    for userpath in all_users_app_support:
-        for root, dirnames, _ in os.walk(userpath):
-            for dirname in fnmatch.filter(dirnames, '*.app'):
-                found_apps.append(os.path.join(root, dirname))
-
-    to_investigate = []
-
-    def check_apps(app):
-        """rather than doing 'starts/endswith' tomfoolery, check in function"""
-        for path in crappy_paths:
-            if path in app:
-                return to_investigate
-        if os.path.basename(app) not in allowed:
-            to_investigate.append(app)
-        return to_investigate
-
-    for app in found_apps:
-        check_apps(app)
-
+    #pylint: disable=line-too-long
+    all_users_app_support_dicts = run_osquery("select path from apps where path like '/Users/%/%Library/Application Support%'")
+    just_paths, to_investigate = [], []
+    for path_dict in all_users_app_support_dicts:
+        if os.path.basename(path_dict['path']) not in allowed:
+            just_paths.append(path_dict['path'])
+    for path in just_paths:
+        got_caught = check_app(path)
+        if got_caught:
+            to_investigate.append(got_caught)
     if to_investigate:
         result = "Not in whitelist, investigate:\n" + "\n".join(*[to_investigate])
     else:
