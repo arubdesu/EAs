@@ -131,7 +131,8 @@ CHROME_WHITELIST = ["Temp",
                     "elicpjhcidhpjomhibiffojpinpmmpil",
                     "hdgenjhkjihnmigcommchefpajjhdmba",
                     "idknbmbdnapjicclomlijcgfpikmndhd",
-                    "ifhgjbjejfocglfphkdecifccicemfll",]
+                    "ifhgjbjejfocglfphkdecifccicemfll",
+                    "ghbmnnjooekpmoecnnnilnnbdlolhkhi"]
 
 CHROME_FOUND_EXTZ = glob.glob(
     '/Users/*/Library/Application Support/Google/Chrome/Default/Extensions/*')

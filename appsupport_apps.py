@@ -28,10 +28,11 @@ def run_osquery(sql):
 def check_app(app):
     """rather than doing 'starts/endswith' tomfoolery, check in function"""
     crappy_paths = ["CitrixOnline/",
-                    "Web Applications",
                     "GoToMyPC Viewer",
+                    "Hewlett-Packard",
                     "Java/",
-                    "TextExpander",]
+                    "TextExpander",
+                    "Web Applications",]
     for path in crappy_paths:
         if path in app:
             return

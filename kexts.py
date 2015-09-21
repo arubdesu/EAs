@@ -43,6 +43,7 @@ def main():
                "/Library/Extensions/LogitechUnifying.kext",
                "/Library/Extensions/PromiseSTEX.kext",
                "/Library/Extensions/RIMBBUSB.kext",
+               "/Library/Extensions/santa-driver.kext",
                "/opt/cisco/anyconnect/bin/acsock.kext",
                "/System/Library/Extensions/ATTOiSCSI.kext",
                "/System/Library/Extensions/dne.kext",

@@ -8,18 +8,20 @@ import hashlib
 
 def main():
     """gimme some main"""
-    expected_rc_colas = {"/etc/rc.common" : 'c2c9d79c11496a2bd59b9cec11bc5b6817098303',
-                         "/etc/rc.common~previous" : 'c2c9d79c11496a2bd59b9cec11bc5b6817098303',
-                         "/etc/rc.deferred_install" : '0c64ec4dfe03ccc8523a5872acf1bbcf48199f6a',
-                         "/etc/rc.imaging" : '6d67f95a31b36116c5e4d1d09ff4cc03e046db60',
-                         "/etc/rc.netboot" : '471e633b1f6bb3de9a48147ebfa5858f71ab0c32',
-                         "/etc/rc.server" : '6dba02aa6e6f5eb9d9dc97bdd3dcef256a698163',}
+    expected_rc_colas = {"/etc/rc.common" : ['c2c9d79c11496a2bd59b9cec11bc5b6817098303',
+                                             'bcfb18ba7fc1b8b6568370cd790ac1be9c0fb6dd'],
+                         "/etc/rc.common~previous" : ['c2c9d79c11496a2bd59b9cec11bc5b6817098303'],
+                         "/etc/rc.deferred_install" : ['0c64ec4dfe03ccc8523a5872acf1bbcf48199f6a'],
+                         "/etc/rc.imaging" : ['6d67f95a31b36116c5e4d1d09ff4cc03e046db60'],
+                         "/etc/rc.netboot" : ['471e633b1f6bb3de9a48147ebfa5858f71ab0c32',
+                                              'a4c7e86cf6f00c1c9bb3b82e1d470d153bba23b5'],
+                         "/etc/rc.server" : ['6dba02aa6e6f5eb9d9dc97bdd3dcef256a698163'],}
     present_rcs = glob.glob('/etc/rc*')
     caught_rcs = []
-    for cola in present_rcs:#expected_rc_colas.keys():
+    for cola in present_rcs:
         with open(cola, 'rb') as sha_me:
             found_sha = hashlib.sha1(sha_me.read()).hexdigest()
-        if expected_rc_colas.get(cola) == found_sha:
+        if found_sha in expected_rc_colas.get(cola):
             pass
         else:
             caught_rcs.append(cola + ' sha: ' + found_sha[:7])
