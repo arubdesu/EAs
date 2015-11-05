@@ -10,7 +10,7 @@ import plistlib
 
 
 FIRMWARE_DICT = {"IM111": "B04",
-                 "IM112" "B03",
+                 "IM112": "B03",
                  "IM121": "B21",
                  "IM131": "B09",
                  "IM141": "B12",
@@ -21,7 +21,7 @@ FIRMWARE_DICT = {"IM111": "B04",
                  "MB81": "B06",
                  "MBA41": "B12",
                  "MBA51": "B04",
-                 "MBA61" "B20",
+                 "MBA61": "B20",
                  "MBA71": "B06",
                  "MBP101": "B0A",
                  "MBP102": "B0A",
@@ -34,7 +34,7 @@ FIRMWARE_DICT = {"IM111": "B04",
                  "MM51": "B12",
                  "MM61": "B0A",
                  "MM71": "B03",
-                 "MP61": "B16",}
+                 "MP61": "B16"}
 
 
 CMD = ["/usr/sbin/system_profiler", "SPHardwareDataType", "-xml"]
