@@ -9,42 +9,24 @@ import subprocess
 import plistlib
 
 
-<<<<<<< Updated upstream
 FIRMWARE_DICT = {"IM111": "B04",
                  "IM112": "B03",
                  "IM121": "B21",
-=======
-FIRMWARE_DICT = {"IM111": "04B",
-                 "IM112": "03B",
-                 "IM121": "23B",
->>>>>>> Stashed changes
                  "IM131": "B09",
                  "IM141": "B12",
                  "IM142": "B12",
                  "IM143": "B12",
                  "IM144": "B12",
-<<<<<<< Updated upstream
                  "IM151": "B03",
                  "MB81": "B06",
                  "MBA41": "B12",
                  "MBA51": "B04",
                  "MBA61": "B20",
                  "MBA71": "B06",
-=======
-                 "IM151": "B05",
-                 "IM161": "B02",
-                 "IM171": "B05",
-                 "MB81": "B10",
-                 "MBA41": "B14",
-                 "MBA51": "B04",
-                 "MBA61": "B21",
-                 "MBA71": "B09",
->>>>>>> Stashed changes
                  "MBP101": "B0A",
                  "MBP102": "B0A",
                  "MBP111": "B16",
                  "MBP112": "B16",
-<<<<<<< Updated upstream
                  "MBP114": "B04",
                  "MBP61": "B11",
                  "MBP81": "B2A",
@@ -54,17 +36,6 @@ FIRMWARE_DICT = {"IM111": "04B",
                  "MM71": "B03",
                  "MP61": "B16"}
 
-=======
-                 "MBP114": "B07",
-                 "MBP121": "B15",
-                 "MBP61": "11B",
-                 "MBP81": "2CB",
-                 "MBP91": "B0C",
-                 "MM51": "B14",
-                 "MM61": "B0A",
-                 "MM71": "B06",
-                 "MP61": "B16"}
->>>>>>> Stashed changes
 
 CMD = ["/usr/sbin/system_profiler", "SPHardwareDataType", "-xml"]
 HDWE_STDOUT = subprocess.check_output(CMD)
