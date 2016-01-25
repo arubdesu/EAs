@@ -114,6 +114,7 @@ CHROME_WHITELIST = ["Temp",
                     "pafkbggdmjlpgkdkcbjmhmfcdpncadgh",# "Google Now",
                     "kcnhkahnjcbndmmehfkdnkjomaanaooo",# GoogleVoice
                     "gpdjojdkbbmdfjfahjcgigfpmkopogic",# Pinterest...
+                    "pkehgijcmpdhfbdbbnkijodmdjhbjlgp",# EFF's Privacy Badger
                     "mfffpogegjflfpflabcdkioaeobkgjik",# "GAIA Component Extension"
                     #"gkojfkhlekighikafcpjkiklfbnlmeio", unless you like customers using free VPN services like 'hola internet'
                     "aknpkdffaafgjchaibgeefbgmgeghloj",# misc junk, not reported diseased yet
@@ -163,4 +164,3 @@ if CAUGHT_EXTENSION_LIST:
 else:
     RESULT = 'Passed'
 print "<result>%s</result>" % RESULT
-
