@@ -34,10 +34,11 @@ def main():
     baddys = []
     length_list = sorted(all_app_sufeeds_etc_dicts, key=itemgetter('app_path'))
     for jisho in length_list:
-        result_string = ''.join([jisho['app_name'], ' - Sparkle Version: ',
-                        jisho.get('sparkle_version', 'Not found'),' - ',
-                        jisho['feed_url'], '\n\t', jisho['app_path']])
-        baddys.append(result_string)
+        if not jisho['app_name'] == 'VLC.app':
+            result_string = ''.join([jisho['app_name'], ' - Sparkle Version: ',
+                            jisho.get('sparkle_version', 'Not found'),' - ',
+                            jisho['feed_url'], '\n\t', jisho['app_path'], ' - ', jisho['bundle_id']])
+            baddys.append(result_string)
     if baddys:
         result = "\n".join(*[baddys])
     else:
